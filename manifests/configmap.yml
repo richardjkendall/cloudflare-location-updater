@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: update-cf-loc-config
+data:
+  CF_ACCOUNT: id
+  CF_LOCATION: id
+  CF_LOCATION_NAME: name

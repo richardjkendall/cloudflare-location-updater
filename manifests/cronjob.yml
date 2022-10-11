@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: update-cf-loc
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: update
+            image: registry/cfupdate:latest
+            imagePullPolicy: Always
+            env:
+              - name: CF_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: cf-token-secret
+                    key: token
+                    optional: false
+            envFrom:
+              - configMapRef:
+                  name: update-cf-loc-config
+          restartPolicy: OnFailure
