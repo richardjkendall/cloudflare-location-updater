@@ -1,5 +1,5 @@
 import requests
-import os
+import os, sys
 
 class BearerAuth(requests.auth.AuthBase):
   def __init__(self, token):
@@ -35,7 +35,25 @@ def update_location_network(account, location, name, ip, token):
   )
   return response.status_code == 200
 
+def check_env():
+  okay = True
+  vars = [
+    "CF_ACCOUNT",
+    "CF_LOCATION",
+    "CF_LOCATION_NAME",
+    "CF_TOKEN"
+  ]
+  for var in vars:
+    if not os.environ.get(var):
+      print(f"Cannot find {var}")
+      okay = False
+  return okay
+
 if __name__ == "__main__":
+  if not check_env():
+    print("Exiting")
+    sys.exit(1)
+  
   ip = get_public_ip()
   print(f"Got public IP of {ip}")
   okay = update_location_network(
@@ -47,3 +65,5 @@ if __name__ == "__main__":
   )
   if okay:
     print("Update complete")
+  else:
+    print("Did not get 200 response code")
